@@ -20,20 +20,20 @@ export default function BottomTabs() {
         }}
       />
       <Tab.Screen
-        name="Create"
-        component={CreateScreen}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <MaterialIcons name="add" color={color} size={26} />
-          ),
-        }}
-      />
-      <Tab.Screen
         name="Monthly"
         component={MonthlyScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
             <MaterialIcons name="date-range" color={color} size={26} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Create"
+        component={CreateScreen}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <MaterialIcons name="add" color={color} size={26} />
           ),
         }}
       />
