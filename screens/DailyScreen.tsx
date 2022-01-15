@@ -1,18 +1,20 @@
 import { useState } from "react";
 import dayjs from "dayjs";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Avatar, Chip, useTheme } from "react-native-elements";
+import { Avatar, Chip, Text, useTheme } from "react-native-elements";
 import {
   daysOfTheWeek,
   getDayOfTheWeek,
   DayOfTheWeek,
 } from "../constants/DaysOfTheWeek";
+import HabitCard from "../components/HabitCard";
 
 export default function DailyScreen() {
-  const today = dayjs().format("d");
+  const todayValue = dayjs().format("d");
+  const today = dayjs().format("YYYY-MM-DD");
   const [selectedDay, setSelectedDay] = useState<DayOfTheWeek | undefined>(
-    getDayOfTheWeek(today)
+    getDayOfTheWeek(todayValue)
   );
 
   function handleDayPress(value: DayOfTheWeek | undefined) {
@@ -20,13 +22,35 @@ export default function DailyScreen() {
   }
   const { theme } = useTheme();
 
+  console.log(today);
+
+  const testData = [
+    {
+      id: "1",
+      emoji: "🐶",
+      color: "red",
+      name: "Walk the dog",
+      dayStreak: 4,
+      // monthCount: [{ 1: ["2022-01-12", "2022-01-14", "2022-01-15"] }],
+    },
+    {
+      id: "2",
+      emoji: "🛌",
+      color: "blue",
+      name: "Wake up early and what happens if the test is really really long",
+      dayStreak: 0,
+    },
+    { id: "3", emoji: "💪", color: "green", name: "Pushups", dayStreak: 2 },
+    { id: "4", emoji: "🧑‍💻", color: "yellow", name: "Code", dayStreak: 7 },
+  ];
+
   return (
     <SafeAreaView style={styles.container}>
       <Chip
         title="Today"
-        type={selectedDay?.value === today ? "solid" : "outline"}
+        type={selectedDay?.value === todayValue ? "solid" : "outline"}
         containerStyle={{ alignSelf: "flex-end", marginRight: 15 }}
-        onPress={() => handleDayPress(getDayOfTheWeek(today))}
+        onPress={() => handleDayPress(getDayOfTheWeek(todayValue))}
       />
       <View style={styles.daysWrap}>
         {daysOfTheWeek.map((day) => (
@@ -54,7 +78,10 @@ export default function DailyScreen() {
           </TouchableOpacity>
         ))}
       </View>
-      <Text>{selectedDay?.name}</Text>
+      <Text h4>{selectedDay?.name}</Text>
+      {testData.map((habit) => (
+        <HabitCard habit={habit} key={habit.id} />
+      ))}
     </SafeAreaView>
   );
 }
