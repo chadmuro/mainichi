@@ -7,6 +7,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import BottomTabs from "./components/BottomTabs";
 import LoginScreen from "./screens/LoginScreen";
 import { theme } from "./styles/theme";
+import { HabitProvider } from "./contexts/habits";
 
 export default function App() {
   const [username, setUsername] = useState("");
@@ -27,8 +28,10 @@ export default function App() {
   return (
     <NavigationContainer>
       <ThemeProvider theme={theme}>
-        {username ? <BottomTabs /> : <LoginScreen />}
-        <StatusBar style="light" />
+        <HabitProvider>
+          {username ? <BottomTabs /> : <LoginScreen />}
+          <StatusBar style="light" />
+        </HabitProvider>
       </ThemeProvider>
     </NavigationContainer>
   );

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import dayjs from "dayjs";
 import { StyleSheet, View, TouchableOpacity, ScrollView } from "react-native";
 import { Avatar, Chip, Text, useTheme } from "react-native-elements";
@@ -9,8 +9,10 @@ import {
   DayOfTheWeek,
 } from "../constants/daysOfTheWeek";
 import HabitCard from "../components/HabitCard";
+import { useHabits } from "../contexts/habits";
 
 export default function DailyScreen() {
+  const { habits, getHabits } = useHabits();
   const todayValue = dayjs().format("d");
   const [selectedDay, setSelectedDay] = useState<DayOfTheWeek | undefined>(
     getDayOfTheWeek(todayValue)
@@ -21,46 +23,9 @@ export default function DailyScreen() {
     setSelectedDay(value);
   }
 
-  const testData = [
-    {
-      id: "1",
-      emoji: "🐶",
-      color: "#FFABAB",
-      name: "Walk the dog",
-      dayStreak: 4,
-      // monthCount: [{ 1: ["2022-01-12", "2022-01-14", "2022-01-15"] }],
-    },
-    {
-      id: "2",
-      emoji: "🛌",
-      color: "#6EB5FF",
-      name: "Wake up early and what happens if the test is really really long",
-      dayStreak: 1,
-    },
-    { id: "3", emoji: "💪", color: "#BFFCC6", name: "Pushups", dayStreak: 2 },
-    { id: "4", emoji: "🧑‍💻", color: "#FFF5BA", name: "Code", dayStreak: 7 },
-    { id: "5", emoji: "🧑‍💻", color: "#FF9CEE", name: "Code", dayStreak: 7 },
-    { id: "6", emoji: "🧑‍💻", color: "#C5A3FF", name: "Code", dayStreak: 7 },
-    {
-      id: "7",
-      emoji: "🐶",
-      color: "#FFABAB",
-      name: "Walk the dog",
-      dayStreak: 0,
-      // monthCount: [{ 1: ["2022-01-12", "2022-01-14", "2022-01-15"] }],
-    },
-    {
-      id: "8",
-      emoji: "🛌",
-      color: "#6EB5FF",
-      name: "Wake up early and what happens if the test is really really long",
-      dayStreak: 0,
-    },
-    { id: "9", emoji: "💪", color: "#BFFCC6", name: "Pushups", dayStreak: 0 },
-    { id: "10", emoji: "🧑‍💻", color: "#FFF5BA", name: "Code", dayStreak: 0 },
-    { id: "11", emoji: "🧑‍💻", color: "#FF9CEE", name: "Code", dayStreak: 0 },
-    { id: "12", emoji: "🧑‍💻", color: "#C5A3FF", name: "Code", dayStreak: 0 },
-  ];
+  useEffect(() => {
+    getHabits();
+  }, []);
 
   return (
     <Layout>
@@ -109,7 +74,7 @@ export default function DailyScreen() {
             </TouchableOpacity>
           ))}
         </View>
-        {testData.map((habit) => (
+        {habits.map((habit) => (
           <HabitCard habit={habit} key={habit.id} />
         ))}
       </ScrollView>

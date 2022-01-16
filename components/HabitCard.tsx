@@ -1,4 +1,5 @@
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
+import dayjs from "dayjs";
 import { useTheme } from "react-native-elements";
 import { getDayText } from "../constants/daysOfTheWeek";
 
@@ -9,19 +10,23 @@ interface HabitCardProps {
     name: string;
     color: string;
     dayStreak: number;
+    dates: string[];
   };
 }
 
 export default function HabitCard({ habit }: HabitCardProps) {
   const { theme } = useTheme();
+  const todayValue = dayjs().format("YYMMDD");
+
+  const completed = !!habit.dates?.includes(todayValue);
 
   return (
     <TouchableOpacity
       style={[
         styles({ color: habit.color }).container,
-        !habit.dayStreak
-          ? styles({ color: habit.color }).defaultContainer
-          : styles({ color: habit.color }).completedContainer,
+        completed
+          ? styles({ color: habit.color }).completedContainer
+          : styles({ color: habit.color }).defaultContainer,
       ]}
     >
       <View style={styles({ color: habit.color }).mainWrap}>
@@ -44,7 +49,7 @@ export default function HabitCard({ habit }: HabitCardProps) {
           <Text
             style={{
               fontSize: 18,
-              color: !habit.dayStreak ? theme.colors?.white : "#000",
+              color: completed ? "#000" : theme.colors?.white,
             }}
           >
             {habit.name}
@@ -52,9 +57,7 @@ export default function HabitCard({ habit }: HabitCardProps) {
         </View>
         <View style={{ flexDirection: "row" }}>
           <Text style={{ marginRight: 3 }}>🔥</Text>
-          <Text
-            style={{ color: !habit.dayStreak ? theme.colors?.white : "#000" }}
-          >
+          <Text style={{ color: completed ? "#000" : theme.colors?.white }}>
             {getDayText(habit.dayStreak)}
           </Text>
         </View>
