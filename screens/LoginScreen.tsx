@@ -1,22 +1,23 @@
 import { StyleSheet, Text } from "react-native";
-import { Input, Button } from "react-native-elements";
+import { Input, Button, useTheme } from "react-native-elements";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function LoginScreen() {
+  const { theme } = useTheme();
   return (
     <SafeAreaView style={styles.container}>
-      <Text>Welcome to Mainichi!</Text>
-      <Text>What's your name?</Text>
+      <Text style={[styles.text, styles.title]}>Welcome to Mainichi!</Text>
+      <Text style={styles.text}>What's your name?</Text>
       <Input
         placeholder="Enter your name..."
-        containerStyle={{ width: 300, marginVertical: 10 }}
+        containerStyle={{ width: 300, marginTop: 30 }}
+        inputStyle={{ color: theme.colors?.white }}
       />
       <Button
         title="Submit"
         containerStyle={{
-          width: 200,
+          width: 300,
           marginHorizontal: 50,
-          marginVertical: 10,
         }}
       />
     </SafeAreaView>
@@ -26,8 +27,14 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#000",
     alignItems: "center",
     justifyContent: "center",
+  },
+  text: {
+    color: "#FAF9F6",
+  },
+  title: {
+    fontSize: 24,
   },
 });

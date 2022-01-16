@@ -12,17 +12,14 @@ import HabitCard from "../components/HabitCard";
 
 export default function DailyScreen() {
   const todayValue = dayjs().format("d");
-  const today = dayjs().format("YYYY-MM-DD");
   const [selectedDay, setSelectedDay] = useState<DayOfTheWeek | undefined>(
     getDayOfTheWeek(todayValue)
   );
+  const { theme } = useTheme();
 
   function handleDayPress(value: DayOfTheWeek | undefined) {
     setSelectedDay(value);
   }
-  const { theme } = useTheme();
-
-  console.log(today);
 
   const testData = [
     {
