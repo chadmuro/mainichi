@@ -72,43 +72,41 @@ export default function DailyScreen() {
       >
         <View style={styles.daysWrap}>
           {daysOfTheWeek.map((day) => (
-            <>
-              <TouchableOpacity
-                key={day.value}
-                onPress={() => handleDayPress(day)}
-              >
-                {todayValue === day.value && (
-                  <Text
-                    style={{
-                      color: theme.colors?.white,
-                      marginLeft: 3,
-                      marginBottom: 3,
-                    }}
-                  >
-                    Today
-                  </Text>
-                )}
-                <Avatar
-                  size={48}
-                  rounded
-                  title={day.day}
-                  titleStyle={{
-                    color:
-                      selectedDay?.value === day.value
-                        ? theme.colors?.white
-                        : theme.colors?.primary,
+            <TouchableOpacity
+              key={day.value}
+              onPress={() => handleDayPress(day)}
+            >
+              {todayValue === day.value && (
+                <Text
+                  style={{
+                    color: theme.colors?.white,
+                    marginLeft: 3,
+                    marginBottom: 3,
                   }}
-                  containerStyle={{
-                    backgroundColor:
-                      selectedDay?.value === day.value
-                        ? theme.colors?.primary
-                        : theme.colors?.white,
-                    borderColor: theme.colors?.primary,
-                    borderWidth: 1,
-                  }}
-                />
-              </TouchableOpacity>
-            </>
+                >
+                  Today
+                </Text>
+              )}
+              <Avatar
+                size={48}
+                rounded
+                title={day.day}
+                titleStyle={{
+                  color:
+                    selectedDay?.value === day.value
+                      ? theme.colors?.white
+                      : theme.colors?.primary,
+                }}
+                containerStyle={{
+                  backgroundColor:
+                    selectedDay?.value === day.value
+                      ? theme.colors?.primary
+                      : theme.colors?.white,
+                  borderColor: theme.colors?.primary,
+                  borderWidth: 1,
+                }}
+              />
+            </TouchableOpacity>
           ))}
         </View>
         {testData.map((habit) => (

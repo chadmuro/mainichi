@@ -2,6 +2,8 @@
 import { initializeApp } from "firebase/app";
 // TODO: Add SDKs for Firebase products that you want to use
 import { getFirestore, collection, addDoc } from "firebase/firestore";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Alert } from "react-native";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -17,3 +19,15 @@ const firebaseConfig = {
 initializeApp(firebaseConfig);
 
 const firestore = getFirestore();
+
+export const createUser = async (username: string) => {
+  try {
+    const user = await addDoc(collection(firestore, "users"), {
+      username,
+    });
+    await AsyncStorage.setItem("userId", user.id);
+    console.log("user added", user);
+  } catch (err: any) {
+    Alert.alert(err.message);
+  }
+};

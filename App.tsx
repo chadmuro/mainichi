@@ -12,10 +12,11 @@ export default function App() {
   const [username, setUsername] = useState("");
   const getData = async () => {
     try {
-      const value = await AsyncStorage.getItem("username");
+      const value = await AsyncStorage.getItem("userId");
       if (value !== null) {
         setUsername(value);
       }
+      console.log(value);
     } catch (err: any) {
       Alert.alert(err.message);
     }
