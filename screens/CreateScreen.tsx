@@ -1,19 +1,12 @@
 import { StyleSheet, Text } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import Layout from "../components/Layout";
 
-export default function DailyScreen() {
+export default function CreateScreen() {
   return (
-    <SafeAreaView style={styles.container}>
+    <Layout>
       <Text>Create</Text>
-    </SafeAreaView>
+    </Layout>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
+const styles = StyleSheet.create({});

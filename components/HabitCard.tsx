@@ -1,4 +1,5 @@
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { useTheme } from "react-native-elements";
 
 interface HabitCardProps {
   habit: {
@@ -11,6 +12,8 @@ interface HabitCardProps {
 }
 
 export default function HabitCard({ habit }: HabitCardProps) {
+  const { theme } = useTheme();
+
   return (
     <TouchableOpacity
       style={[
@@ -30,20 +33,29 @@ export default function HabitCard({ habit }: HabitCardProps) {
           }}
         >
           <Text
-            style={[
-              styles({ color: habit.color }).mainText,
-              styles({ color: habit.color }).icon,
-            ]}
+            style={{
+              fontSize: 18,
+              marginRight: 3,
+            }}
           >
             {habit.emoji}
           </Text>
-          <Text style={styles({ color: habit.color }).mainText}>
+          <Text
+            style={{
+              fontSize: 18,
+              color: habit.dayStreak ? theme.colors?.white : "#000",
+            }}
+          >
             {habit.name}
           </Text>
         </View>
         <View style={{ flexDirection: "row" }}>
-          <Text style={styles({ color: habit.color }).icon}>🔥</Text>
-          <Text>{habit.dayStreak} day</Text>
+          <Text style={{ marginRight: 3 }}>🔥</Text>
+          <Text
+            style={{ color: habit.dayStreak ? theme.colors?.white : "#000" }}
+          >
+            {habit.dayStreak} day
+          </Text>
         </View>
       </View>
     </TouchableOpacity>
@@ -75,11 +87,5 @@ const styles = ({ color }: StylesProps) =>
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-between",
-    },
-    mainText: {
-      fontSize: 18,
-    },
-    icon: {
-      marginRight: 3,
     },
   });

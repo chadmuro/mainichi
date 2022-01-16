@@ -11,7 +11,7 @@ export default function App() {
       <ThemeProvider theme={theme}>
         <BottomTabs />
         {/* <LoginScreen /> */}
-        <StatusBar style="dark" />
+        <StatusBar style="light" />
       </ThemeProvider>
     </NavigationContainer>
   );
