@@ -18,3 +18,10 @@ export function getDayOfTheWeek(value: string): DayOfTheWeek | undefined {
   const dayName = daysOfTheWeek.find((day) => day.value === value);
   return dayName;
 }
+
+export function getDayText(dayStreak: number): string {
+  if (dayStreak === 1) {
+    return `${dayStreak} day`;
+  }
+  return `${dayStreak} days`;
+}

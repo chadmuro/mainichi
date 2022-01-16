@@ -7,7 +7,7 @@ import {
   daysOfTheWeek,
   getDayOfTheWeek,
   DayOfTheWeek,
-} from "../constants/DaysOfTheWeek";
+} from "../constants/daysOfTheWeek";
 import HabitCard from "../components/HabitCard";
 
 export default function DailyScreen() {

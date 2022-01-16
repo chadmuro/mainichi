@@ -1,5 +1,6 @@
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { useTheme } from "react-native-elements";
+import { getDayText } from "../constants/daysOfTheWeek";
 
 interface HabitCardProps {
   habit: {
@@ -18,7 +19,7 @@ export default function HabitCard({ habit }: HabitCardProps) {
     <TouchableOpacity
       style={[
         styles({ color: habit.color }).container,
-        habit.dayStreak
+        !habit.dayStreak
           ? styles({ color: habit.color }).defaultContainer
           : styles({ color: habit.color }).completedContainer,
       ]}
@@ -43,7 +44,7 @@ export default function HabitCard({ habit }: HabitCardProps) {
           <Text
             style={{
               fontSize: 18,
-              color: habit.dayStreak ? theme.colors?.white : "#000",
+              color: !habit.dayStreak ? theme.colors?.white : "#000",
             }}
           >
             {habit.name}
@@ -52,9 +53,9 @@ export default function HabitCard({ habit }: HabitCardProps) {
         <View style={{ flexDirection: "row" }}>
           <Text style={{ marginRight: 3 }}>🔥</Text>
           <Text
-            style={{ color: habit.dayStreak ? theme.colors?.white : "#000" }}
+            style={{ color: !habit.dayStreak ? theme.colors?.white : "#000" }}
           >
-            {habit.dayStreak} day
+            {getDayText(habit.dayStreak)}
           </Text>
         </View>
       </View>
