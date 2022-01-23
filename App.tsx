@@ -28,7 +28,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <ThemeProvider theme={theme}>
-        <HabitProvider>
+        <HabitProvider username={username}>
           {username ? <BottomTabs /> : <LoginScreen />}
           <StatusBar style="light" />
         </HabitProvider>

@@ -3,10 +3,24 @@ import { StyleSheet, Text, View } from "react-native";
 import { Button, Input, Avatar, useTheme } from "react-native-elements";
 import Layout from "../components/Layout";
 import { Color, colors } from "../constants/colorSelect";
+import { useHabits } from "../contexts/habits";
 
 export default function CreateScreen() {
   const [selectedColor, setSelectedColor] = useState<Color>("#FFABAB");
+  const [habitName, setHabitName] = useState("");
+  const [habitEmoji, setHabitEmoji] = useState("");
   const { theme } = useTheme();
+  const { postHabit } = useHabits();
+
+  const onSubmit = () => {
+    postHabit({
+      dayStreak: 0,
+      emoji: habitEmoji,
+      name: habitName,
+      color: selectedColor,
+      dates: [],
+    });
+  };
 
   return (
     <Layout>
@@ -15,13 +29,23 @@ export default function CreateScreen() {
           <Text style={{ color: theme.colors?.white, fontSize: 18 }}>
             Title
           </Text>
-          <Input placeholder="Enter new habit" />
+          <Input
+            placeholder="Enter new habit"
+            value={habitName}
+            onChangeText={setHabitName}
+            style={{ color: theme.colors?.white, fontSize: 18 }}
+          />
         </View>
         <View style={styles.inputWrap}>
           <Text style={{ color: theme.colors?.white, fontSize: 18 }}>
             Emoji
           </Text>
-          <Input placeholder="Enter emoji" />
+          <Input
+            placeholder="Enter emoji"
+            value={habitEmoji}
+            onChangeText={setHabitEmoji}
+            style={{ color: theme.colors?.white, fontSize: 18 }}
+          />
         </View>
         <View style={styles.inputWrap}>
           <Text style={{ color: theme.colors?.white, fontSize: 18 }}>
@@ -49,6 +73,7 @@ export default function CreateScreen() {
         <Button
           title="Submit"
           containerStyle={{ width: "100%", marginTop: 20 }}
+          onPress={onSubmit}
         />
       </View>
     </Layout>

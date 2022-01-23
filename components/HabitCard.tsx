@@ -2,6 +2,7 @@ import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import dayjs from "dayjs";
 import { useTheme } from "react-native-elements";
 import { getDayText } from "../constants/daysOfTheWeek";
+import { useHabits } from "../contexts/habits";
 
 interface HabitCardProps {
   habit: {
@@ -17,8 +18,17 @@ interface HabitCardProps {
 export default function HabitCard({ habit }: HabitCardProps) {
   const { theme } = useTheme();
   const todayValue = dayjs().format("YYMMDD");
+  const { completeHabit, removeCompleteHabit } = useHabits();
 
   const completed = !!habit.dates?.includes(todayValue);
+
+  const onHabitPress = (habitId: string) => {
+    if (completed) {
+      removeCompleteHabit(habitId, todayValue);
+    } else {
+      completeHabit(habitId, todayValue);
+    }
+  };
 
   return (
     <TouchableOpacity
@@ -28,6 +38,7 @@ export default function HabitCard({ habit }: HabitCardProps) {
           ? styles({ color: habit.color }).completedContainer
           : styles({ color: habit.color }).defaultContainer,
       ]}
+      onPress={() => onHabitPress(habit.id)}
     >
       <View style={styles({ color: habit.color }).mainWrap}>
         <View

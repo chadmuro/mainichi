@@ -26,7 +26,6 @@ export const createUser = async (username: string) => {
       username,
     });
     await AsyncStorage.setItem("userId", user.id);
-    console.log("user added", user);
   } catch (err: any) {
     Alert.alert(err.message);
   }
