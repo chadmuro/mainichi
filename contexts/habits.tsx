@@ -52,6 +52,7 @@ const HabitProvider = ({ children, username }: any) => {
       await setDoc(doc(docRef), habit);
       setPosting(false);
       setPosted(true);
+      getHabits();
     } catch (err: any) {
       Alert.alert(err.message);
       setPosting(false);
@@ -65,6 +66,7 @@ const HabitProvider = ({ children, username }: any) => {
         dates: arrayUnion(date),
         dayStreak: increment(1),
       });
+      getHabits();
     } catch (err: any) {
       Alert.alert(err.message);
     }
@@ -77,6 +79,7 @@ const HabitProvider = ({ children, username }: any) => {
         dates: arrayRemove(date),
         dayStreak: increment(-1),
       });
+      getHabits();
     } catch (err: any) {
       Alert.alert(err.message);
     }
