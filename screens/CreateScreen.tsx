@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
+import EmojiPicker from 'rn-emoji-keyboard';
 import { StyleSheet, Text, View } from 'react-native';
 import { Button, Input, Avatar, useTheme } from 'react-native-elements';
+import { EmojiType } from 'rn-emoji-keyboard/lib/typescript/types';
 import Layout from '../components/Layout';
 import { Color, colors } from '../constants/colorSelect';
 import { useHabits } from '../contexts/habits';
 
 export default function CreateScreen() {
+  const [isOpen, setIsOpen] = useState(false);
   const [selectedColor, setSelectedColor] = useState<Color>('#FFABAB');
   const [habitName, setHabitName] = useState('');
   const [habitEmoji, setHabitEmoji] = useState<string>('');
@@ -22,6 +25,11 @@ export default function CreateScreen() {
     });
   };
 
+  const handlePick = (emojiObject: EmojiType) => {
+    console.log(emojiObject);
+    setHabitEmoji(emojiObject.emoji);
+  };
+
   return (
     <Layout>
       <View style={styles.formWrap}>
@@ -30,6 +38,7 @@ export default function CreateScreen() {
             Title
           </Text>
           <Input
+            autoFocus
             placeholder="Enter new habit"
             value={habitName}
             onChangeText={setHabitName}
@@ -41,9 +50,11 @@ export default function CreateScreen() {
             Emoji
           </Text>
           <Input
+            autoFocus={false}
             placeholder="Enter emoji"
             value={habitEmoji}
-            onChangeText={setHabitEmoji}
+            onFocus={() => setIsOpen(true)}
+            onBlur={() => setIsOpen(false)}
             style={{ color: theme.colors?.white, fontSize: 18 }}
           />
         </View>
@@ -76,6 +87,11 @@ export default function CreateScreen() {
           onPress={onSubmit}
         />
       </View>
+      <EmojiPicker
+        onEmojiSelected={handlePick}
+        open={isOpen}
+        onClose={() => setIsOpen(false)}
+      />
     </Layout>
   );
 }
