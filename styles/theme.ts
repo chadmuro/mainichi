@@ -1,12 +1,14 @@
-import { Platform } from "react-native";
-import { colors } from "react-native-elements";
+import { Platform } from 'react-native';
+import { colors } from 'react-native-elements';
 
-export const theme = {
+const theme = {
   colors: {
     ...Platform.select({
       default: colors.platform.android,
       ios: colors.platform.ios,
     }),
-    white: "#FAF9F6",
+    white: '#FAF9F6',
   },
 };
+
+export default theme;

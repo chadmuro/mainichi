@@ -1,10 +1,10 @@
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { useTheme } from "react-native-elements";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import CreateScreen from "../screens/CreateScreen";
-import DailyScreen from "../screens/DailyScreen";
-import MonthlyScreen from "../screens/MonthlyScreen";
-import SettingsScreen from "../screens/SettingsScreen";
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { useTheme } from 'react-native-elements';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import CreateScreen from '../screens/CreateScreen';
+import DailyScreen from '../screens/DailyScreen';
+import MonthlyScreen from '../screens/MonthlyScreen';
+import SettingsScreen from '../screens/SettingsScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -14,8 +14,8 @@ export default function BottomTabs() {
   return (
     <Tab.Navigator
       screenOptions={{
-        tabBarStyle: { backgroundColor: "#000" },
-        headerStyle: { backgroundColor: "#000" },
+        tabBarStyle: { backgroundColor: '#000' },
+        headerStyle: { backgroundColor: '#000' },
         headerTitleStyle: { color: theme.colors?.white },
         headerTitleContainerStyle: { marginBottom: 0 },
       }}
@@ -24,7 +24,7 @@ export default function BottomTabs() {
         name="Daily"
         component={DailyScreen}
         options={{
-          tabBarIcon: ({ color, size }) => (
+          tabBarIcon: ({ color }) => (
             <MaterialIcons name="event" color={color} size={26} />
           ),
         }}
@@ -33,7 +33,7 @@ export default function BottomTabs() {
         name="Monthly"
         component={MonthlyScreen}
         options={{
-          tabBarIcon: ({ color, size }) => (
+          tabBarIcon: ({ color }) => (
             <MaterialIcons name="date-range" color={color} size={26} />
           ),
         }}
@@ -42,7 +42,7 @@ export default function BottomTabs() {
         name="Create"
         component={CreateScreen}
         options={{
-          tabBarIcon: ({ color, size }) => (
+          tabBarIcon: ({ color }) => (
             <MaterialIcons name="add" color={color} size={26} />
           ),
         }}
@@ -51,7 +51,7 @@ export default function BottomTabs() {
         name="Settings"
         component={SettingsScreen}
         options={{
-          tabBarIcon: ({ color, size }) => (
+          tabBarIcon: ({ color }) => (
             <MaterialIcons name="settings" color={color} size={26} />
           ),
         }}

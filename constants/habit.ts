@@ -1,4 +1,4 @@
-import { Color } from "./colorSelect";
+import { Color } from './colorSelect';
 
 export type Habit = {
   id: string;

@@ -1,8 +1,8 @@
-import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
-import dayjs from "dayjs";
-import { useTheme } from "react-native-elements";
-import { getDayText } from "../constants/daysOfTheWeek";
-import { useHabits } from "../contexts/habits";
+import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import dayjs from 'dayjs';
+import { useTheme } from 'react-native-elements';
+import { getDayText } from '../constants/daysOfTheWeek';
+import { useHabits } from '../contexts/habits';
 
 interface HabitCardProps {
   habit: {
@@ -17,7 +17,7 @@ interface HabitCardProps {
 
 export default function HabitCard({ habit }: HabitCardProps) {
   const { theme } = useTheme();
-  const todayValue = dayjs().format("YYMMDD");
+  const todayValue = dayjs().format('YYMMDD');
   const { completeHabit, removeCompleteHabit } = useHabits();
 
   const completed = !!habit.dates?.includes(todayValue);
@@ -44,9 +44,9 @@ export default function HabitCard({ habit }: HabitCardProps) {
         <View
           style={{
             flex: 1,
-            flexDirection: "row",
-            alignItems: "center",
-            flexWrap: "wrap",
+            flexDirection: 'row',
+            alignItems: 'center',
+            flexWrap: 'wrap',
           }}
         >
           <Text
@@ -60,15 +60,15 @@ export default function HabitCard({ habit }: HabitCardProps) {
           <Text
             style={{
               fontSize: 18,
-              color: completed ? "#000" : theme.colors?.white,
+              color: completed ? '#000' : theme.colors?.white,
             }}
           >
             {habit.name}
           </Text>
         </View>
-        <View style={{ flexDirection: "row" }}>
+        <View style={{ flexDirection: 'row' }}>
           <Text style={{ marginRight: 3 }}>🔥</Text>
-          <Text style={{ color: completed ? "#000" : theme.colors?.white }}>
+          <Text style={{ color: completed ? '#000' : theme.colors?.white }}>
             {getDayText(habit.dayStreak)}
           </Text>
         </View>
@@ -89,18 +89,18 @@ const styles = ({ color }: StylesProps) =>
     },
     completedContainer: {
       backgroundColor: color,
-      width: "80%",
+      width: '80%',
     },
     defaultContainer: {
       borderColor: color,
       borderWidth: 1,
-      width: "80%",
+      width: '80%',
     },
     mainWrap: {
       paddingHorizontal: 15,
       paddingVertical: 25,
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
     },
   });

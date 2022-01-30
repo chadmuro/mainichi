@@ -1,21 +1,21 @@
-import { useState, useEffect } from "react";
-import dayjs from "dayjs";
-import { StyleSheet, View, TouchableOpacity, ScrollView } from "react-native";
-import { Avatar, Chip, Text, useTheme } from "react-native-elements";
-import Layout from "../components/Layout";
+import React, { useState } from 'react';
+import dayjs from 'dayjs';
+import { StyleSheet, View, TouchableOpacity, ScrollView } from 'react-native';
+import { Avatar, Text, useTheme } from 'react-native-elements';
+import Layout from '../components/Layout';
 import {
   daysOfTheWeek,
   getDayOfTheWeek,
   DayOfTheWeek,
-} from "../constants/daysOfTheWeek";
-import HabitCard from "../components/HabitCard";
-import { useHabits } from "../contexts/habits";
+} from '../constants/daysOfTheWeek';
+import HabitCard from '../components/HabitCard';
+import { useHabits } from '../contexts/habits';
 
 export default function DailyScreen() {
-  const { habits, getHabits } = useHabits();
-  const todayValue = dayjs().format("d");
+  const { habits } = useHabits();
+  const todayValue = dayjs().format('d');
   const [selectedDay, setSelectedDay] = useState<DayOfTheWeek | undefined>(
-    getDayOfTheWeek(todayValue)
+    getDayOfTheWeek(todayValue),
   );
   const { theme } = useTheme();
 
@@ -23,20 +23,16 @@ export default function DailyScreen() {
     setSelectedDay(value);
   }
 
-  useEffect(() => {
-    getHabits();
-  }, []);
-
   return (
     <Layout>
       <ScrollView
         contentContainerStyle={{
-          alignItems: "center",
-          justifyContent: "center",
+          alignItems: 'center',
+          justifyContent: 'center',
         }}
       >
         <View style={styles.daysWrap}>
-          {daysOfTheWeek.map((day) => (
+          {daysOfTheWeek.map(day => (
             <TouchableOpacity
               key={day.value}
               onPress={() => handleDayPress(day)}
@@ -74,7 +70,7 @@ export default function DailyScreen() {
             </TouchableOpacity>
           ))}
         </View>
-        {habits.map((habit) => (
+        {habits.map(habit => (
           <HabitCard habit={habit} key={habit.id} />
         ))}
       </ScrollView>
@@ -84,11 +80,11 @@ export default function DailyScreen() {
 
 const styles = StyleSheet.create({
   daysWrap: {
-    display: "flex",
-    flexDirection: "row",
+    display: 'flex',
+    flexDirection: 'row',
     marginVertical: 10,
-    width: "95%",
-    justifyContent: "space-between",
-    alignItems: "flex-end",
+    width: '95%',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
   },
 });
