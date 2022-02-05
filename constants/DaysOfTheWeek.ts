@@ -1,20 +1,19 @@
 export type DayOfTheWeek = {
-  value: string;
-  day: string;
+  value: number;
   name: string;
 };
 
 export const daysOfTheWeek: DayOfTheWeek[] = [
-  { value: '0', day: 'S', name: 'Sunday' },
-  { value: '1', day: 'M', name: 'Monday' },
-  { value: '2', day: 'T', name: 'Tuesday' },
-  { value: '3', day: 'W', name: 'Wednesday' },
-  { value: '4', day: 'T', name: 'Thursday' },
-  { value: '5', day: 'F', name: 'Friday' },
-  { value: '6', day: 'S', name: 'Saturday' },
+  { value: 0, name: 'Sunday' },
+  { value: 1, name: 'Monday' },
+  { value: 2, name: 'Tuesday' },
+  { value: 3, name: 'Wednesday' },
+  { value: 4, name: 'Thursday' },
+  { value: 5, name: 'Friday' },
+  { value: 6, name: 'Saturday' },
 ];
 
-export function getDayOfTheWeek(value: string): DayOfTheWeek | undefined {
+export function getDayOfTheWeek(value: number): DayOfTheWeek | undefined {
   const dayName = daysOfTheWeek.find(day => day.value === value);
   return dayName;
 }

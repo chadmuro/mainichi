@@ -1,19 +1,40 @@
 import React, { useState } from 'react';
 import EmojiPicker from 'rn-emoji-keyboard';
-import { StyleSheet, Text, View } from 'react-native';
+import { useSetRecoilState, useRecoilValue } from 'recoil';
+import { collection, setDoc, doc } from 'firebase/firestore';
+import { Alert, StyleSheet, Text, View } from 'react-native';
 import { Button, Input, Avatar, useTheme } from 'react-native-elements';
 import { EmojiType } from 'rn-emoji-keyboard/lib/typescript/types';
 import Layout from '../components/Layout';
 import { Color, colors } from '../constants/colorSelect';
-import { useHabits } from '../contexts/habits';
+import { habitsState } from '../atoms/habitsState';
+import { Habit } from '../constants/habit';
+import { firestore } from '../firebase';
+import { userState } from '../atoms/userState';
 
-export default function CreateScreen() {
+export default function CreateScreen({ navigation }: any) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedColor, setSelectedColor] = useState<Color>('#FFABAB');
   const [habitName, setHabitName] = useState('');
-  const [habitEmoji, setHabitEmoji] = useState<string>('');
+  const [habitEmoji, setHabitEmoji] = useState('');
   const { theme } = useTheme();
-  const { postHabit } = useHabits();
+  const setHabits = useSetRecoilState(habitsState);
+  const user = useRecoilValue(userState);
+
+  const postHabit = async (habit: Omit<Habit, 'id'>) => {
+    try {
+      console.log('firestore posted');
+      const docRef = collection(firestore, user || '');
+      await setDoc(doc(docRef), habit);
+      const newHabit = { id: docRef.id, ...habit };
+      setHabits(prevHabits => [...prevHabits, newHabit]);
+      navigation.navigate('Daily');
+      setHabitName('');
+      setHabitEmoji('');
+    } catch (err: any) {
+      Alert.alert(err.message);
+    }
+  };
 
   const onSubmit = () => {
     postHabit({
@@ -52,6 +73,7 @@ export default function CreateScreen() {
             autoFocus={false}
             placeholder="Enter emoji"
             value={habitEmoji}
+            onChangeText={setHabitEmoji}
             onFocus={() => setIsOpen(true)}
             onBlur={() => setIsOpen(false)}
             style={{ color: theme.colors?.white, fontSize: 18 }}

@@ -5,18 +5,14 @@ import {
   arrayUnion,
   arrayRemove,
   updateDoc,
-  collection,
-  setDoc,
   doc,
   increment,
 } from 'firebase/firestore';
 import { firestore } from '../firebase';
-import { Habit } from '../constants/habit';
 import { userState } from '../atoms/userState';
 
 const HabitContext = createContext<
   | {
-      postHabit: (habit: Omit<Habit, 'id'>) => Promise<void>;
       completeHabit: (habitId: string, date: string) => Promise<void>;
       removeCompleteHabit: (habitId: string, date: string) => Promise<void>;
     }
@@ -28,15 +24,6 @@ function HabitProvider({ children }: any) {
 
   const value = useMemo(
     () => ({
-      postHabit: async (habit: Omit<Habit, 'id'>) => {
-        try {
-          console.log('firestore posted');
-          const docRef = collection(firestore, user || '');
-          await setDoc(doc(docRef), habit);
-        } catch (err: any) {
-          Alert.alert(err.message);
-        }
-      },
       completeHabit: async (habitId: string, date: string) => {
         try {
           console.log('firestore updated');
