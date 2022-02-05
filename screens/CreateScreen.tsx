@@ -26,7 +26,6 @@ export default function CreateScreen() {
   };
 
   const handlePick = (emojiObject: EmojiType) => {
-    console.log(emojiObject);
     setHabitEmoji(emojiObject.emoji);
   };
 

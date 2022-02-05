@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useRecoilValue } from 'recoil';
 import dayjs from 'dayjs';
 import { StyleSheet, View, TouchableOpacity, ScrollView } from 'react-native';
 import { Avatar, Text, useTheme } from 'react-native-elements';
@@ -9,19 +10,21 @@ import {
   DayOfTheWeek,
 } from '../constants/daysOfTheWeek';
 import HabitCard from '../components/HabitCard';
-import { useHabits } from '../contexts/habits';
+import { habitSelector } from '../atoms/habitsState';
 
 export default function DailyScreen() {
-  const { habits } = useHabits();
   const todayValue = dayjs().format('d');
   const [selectedDay, setSelectedDay] = useState<DayOfTheWeek | undefined>(
     getDayOfTheWeek(todayValue),
   );
   const { theme } = useTheme();
+  const habits = useRecoilValue(habitSelector);
 
   function handleDayPress(value: DayOfTheWeek | undefined) {
     setSelectedDay(value);
   }
+
+  console.log(habits);
 
   return (
     <Layout>
@@ -70,9 +73,8 @@ export default function DailyScreen() {
             </TouchableOpacity>
           ))}
         </View>
-        {habits.map(habit => (
-          <HabitCard habit={habit} key={habit.id} />
-        ))}
+        {habits &&
+          habits.map(habit => <HabitCard habit={habit} key={habit.id} />)}
       </ScrollView>
     </Layout>
   );
