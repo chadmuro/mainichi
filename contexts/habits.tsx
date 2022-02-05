@@ -1,5 +1,6 @@
 import { useMemo, createContext, useContext } from 'react';
 import { Alert } from 'react-native';
+import { useRecoilValue } from 'recoil';
 import {
   arrayUnion,
   arrayRemove,
@@ -11,7 +12,7 @@ import {
 } from 'firebase/firestore';
 import { firestore } from '../firebase';
 import { Habit } from '../constants/habit';
-import { useUser } from './user';
+import { userState } from '../atoms/userState';
 
 const HabitContext = createContext<
   | {
@@ -23,14 +24,14 @@ const HabitContext = createContext<
 >(undefined);
 
 function HabitProvider({ children }: any) {
-  const { user: username } = useUser();
+  const user = useRecoilValue(userState);
 
   const value = useMemo(
     () => ({
       postHabit: async (habit: Omit<Habit, 'id'>) => {
         try {
           console.log('firestore posted');
-          const docRef = collection(firestore, username);
+          const docRef = collection(firestore, user || '');
           await setDoc(doc(docRef), habit);
         } catch (err: any) {
           Alert.alert(err.message);
@@ -39,7 +40,7 @@ function HabitProvider({ children }: any) {
       completeHabit: async (habitId: string, date: string) => {
         try {
           console.log('firestore updated');
-          const docRef = doc(firestore, username, habitId);
+          const docRef = doc(firestore, user || '', habitId);
           await updateDoc(docRef, {
             dates: arrayUnion(date),
             dayStreak: increment(1),
@@ -51,7 +52,7 @@ function HabitProvider({ children }: any) {
       removeCompleteHabit: async (habitId: string, date: string) => {
         try {
           console.log('firestore updated');
-          const docRef = doc(firestore, username, habitId);
+          const docRef = doc(firestore, user || '', habitId);
           await updateDoc(docRef, {
             dates: arrayRemove(date),
             dayStreak: increment(-1),
@@ -61,7 +62,7 @@ function HabitProvider({ children }: any) {
         }
       },
     }),
-    [username],
+    [user],
   );
 
   return (

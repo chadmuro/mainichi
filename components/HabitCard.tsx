@@ -43,10 +43,9 @@ export default function HabitCard({ habit }: HabitCardProps) {
       <View style={styles({ color: habit.color }).mainWrap}>
         <View
           style={{
-            flex: 1,
             flexDirection: 'row',
             alignItems: 'center',
-            flexWrap: 'wrap',
+            flexBasis: '90%',
           }}
         >
           <Text

@@ -1,24 +1,17 @@
-import React, { Suspense } from 'react';
-import { View, Text } from 'react-native';
+import { useRecoilValue } from 'recoil';
 import BottomTabs from './components/BottomTabs';
 import LoginScreen from './screens/LoginScreen';
-import { useUser } from './contexts/user';
+import { userState } from './atoms/userState';
 
 export default function Navigation() {
-  const { user, loading } = useUser();
-
+  const user = useRecoilValue(userState);
   let mainContent: React.ReactNode = null;
-  if (loading) {
-    mainContent = (
-      <View>
-        <Text>Loading...</Text>
-      </View>
-    );
-  } else if (!loading && !user) {
+  if (!user) {
     mainContent = <LoginScreen />;
-  } else if (!loading && user) {
+  } else if (user) {
     mainContent = <BottomTabs />;
   }
 
-  return <Suspense fallback={null}>{mainContent}</Suspense>;
+  // eslint-disable-next-line react/jsx-no-useless-fragment
+  return <>{mainContent}</>;
 }
