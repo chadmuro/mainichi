@@ -1,4 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable react/jsx-props-no-spreading */
 import React, { useState } from 'react';
+import { SubmitHandler, useForm, Controller } from 'react-hook-form';
 import EmojiPicker from 'rn-emoji-keyboard';
 import { useSetRecoilState, useRecoilValue } from 'recoil';
 import { collection, setDoc, doc } from 'firebase/firestore';
@@ -12,11 +15,21 @@ import { Habit } from '../constants/habit';
 import { firestore } from '../firebase';
 import { userState } from '../atoms/userState';
 
+type CreateFormValues = {
+  title: string;
+  emoji: string;
+};
+
 export default function CreateScreen({ navigation }: any) {
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    reset,
+    formState: { errors },
+  } = useForm<CreateFormValues>();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedColor, setSelectedColor] = useState<Color>('#FFABAB');
-  const [habitName, setHabitName] = useState('');
-  const [habitEmoji, setHabitEmoji] = useState('');
   const { theme } = useTheme();
   const setHabits = useSetRecoilState(habitsState);
   const user = useRecoilValue(userState);
@@ -28,26 +41,25 @@ export default function CreateScreen({ navigation }: any) {
       await setDoc(doc(docRef), habit);
       const newHabit = { id: docRef.id, ...habit };
       setHabits(prevHabits => [...prevHabits, newHabit]);
+      reset();
       navigation.navigate('Daily');
-      setHabitName('');
-      setHabitEmoji('');
     } catch (err: any) {
       Alert.alert(err.message);
     }
   };
 
-  const onSubmit = () => {
+  const onSubmit: SubmitHandler<CreateFormValues> = data => {
     postHabit({
       dayStreak: 0,
-      emoji: habitEmoji as string,
-      name: habitName,
+      emoji: data.emoji,
+      name: data.title,
       color: selectedColor,
       dates: [],
     });
   };
 
   const handlePick = (emojiObject: EmojiType) => {
-    setHabitEmoji(emojiObject.emoji);
+    setValue('emoji', emojiObject.emoji);
   };
 
   return (
@@ -57,26 +69,41 @@ export default function CreateScreen({ navigation }: any) {
           <Text style={{ color: theme.colors?.white, fontSize: 18 }}>
             Title
           </Text>
-          <Input
-            autoFocus
-            placeholder="Enter new habit"
-            value={habitName}
-            onChangeText={setHabitName}
-            style={{ color: theme.colors?.white, fontSize: 18 }}
+          <Controller
+            name="title"
+            control={control}
+            render={({ field: { value, onChange } }) => (
+              <Input
+                autoFocus
+                placeholder="Enter new habit"
+                value={value}
+                onChangeText={onChange}
+                errorStyle={{ color: 'red' }}
+                errorMessage={errors.title ? errors.title.message : undefined}
+                style={{ color: theme.colors?.white, fontSize: 18 }}
+              />
+            )}
+            rules={{ required: 'Habit title is required' }}
           />
         </View>
         <View style={styles.inputWrap}>
           <Text style={{ color: theme.colors?.white, fontSize: 18 }}>
             Emoji
           </Text>
-          <Input
-            autoFocus={false}
-            placeholder="Enter emoji"
-            value={habitEmoji}
-            onChangeText={setHabitEmoji}
-            onFocus={() => setIsOpen(true)}
-            onBlur={() => setIsOpen(false)}
-            style={{ color: theme.colors?.white, fontSize: 18 }}
+          <Controller
+            name="emoji"
+            control={control}
+            render={({ field: { value } }) => (
+              <Input
+                placeholder="Enter emoji"
+                value={value}
+                onFocus={() => setIsOpen(true)}
+                errorStyle={{ color: 'red' }}
+                errorMessage={errors.emoji ? errors.emoji.message : undefined}
+                style={{ color: theme.colors?.white, fontSize: 18 }}
+              />
+            )}
+            rules={{ required: 'Emoji is required' }}
           />
         </View>
         <View style={styles.inputWrap}>
@@ -105,7 +132,7 @@ export default function CreateScreen({ navigation }: any) {
         <Button
           title="Submit"
           containerStyle={{ width: '100%', marginTop: 20 }}
-          onPress={onSubmit}
+          onPress={handleSubmit(onSubmit)}
         />
       </View>
       <EmojiPicker
@@ -123,6 +150,7 @@ const styles = StyleSheet.create({
   },
   inputWrap: {
     display: 'flex',
+    marginBottom: 10,
   },
   colorsWrap: {
     display: 'flex',
