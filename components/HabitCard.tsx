@@ -1,8 +1,18 @@
-import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity, Alert } from 'react-native';
+import {
+  arrayUnion,
+  arrayRemove,
+  updateDoc,
+  doc,
+  increment,
+} from 'firebase/firestore';
 import dayjs from 'dayjs';
 import { useTheme } from 'react-native-elements';
+import { useRecoilValue, useRecoilState } from 'recoil';
+import { firestore } from '../firebase';
 import { getDayText } from '../constants/daysOfTheWeek';
-import { useHabits } from '../contexts/habits';
+import { userState } from '../atoms/userState';
+import { habitsState } from '../atoms/habitsState';
 
 interface HabitCardProps {
   habit: {
@@ -18,15 +28,55 @@ interface HabitCardProps {
 export default function HabitCard({ habit }: HabitCardProps) {
   const { theme } = useTheme();
   const todayValue = dayjs().format('YYMMDD');
-  const { completeHabit, removeCompleteHabit } = useHabits();
+  const user = useRecoilValue(userState);
+  const [habits, setHabits] = useRecoilState(habitsState);
 
   const completed = !!habit.dates?.includes(todayValue);
 
-  const onHabitPress = (habitId: string) => {
+  const onHabitPress = async (habitId: string) => {
     if (completed) {
-      removeCompleteHabit(habitId, todayValue);
+      try {
+        console.log('firestore updated');
+        const docRef = doc(firestore, user || '', habitId);
+        await updateDoc(docRef, {
+          dates: arrayRemove(todayValue),
+          dayStreak: increment(-1),
+        });
+        const oldHabitIndex = habits.findIndex(habit => habit.id === habitId);
+        const oldHabit = habits[oldHabitIndex];
+        const newDates = oldHabit.dates.filter(date => date !== todayValue);
+        const newHabit = {
+          ...oldHabit,
+          dates: [...newDates],
+          dayStreak: oldHabit.dayStreak - 1,
+        };
+        const newHabits = [...habits];
+        newHabits.splice(oldHabitIndex, 1, newHabit);
+        setHabits(newHabits);
+      } catch (err: any) {
+        Alert.alert(err.message);
+      }
     } else {
-      completeHabit(habitId, todayValue);
+      try {
+        console.log('firestore updated');
+        const docRef = doc(firestore, user || '', habitId);
+        await updateDoc(docRef, {
+          dates: arrayUnion(todayValue),
+          dayStreak: increment(1),
+        });
+        const oldHabitIndex = habits.findIndex(habit => habit.id === habitId);
+        const oldHabit = habits[oldHabitIndex];
+        const newHabit = {
+          ...oldHabit,
+          dates: [...(oldHabit?.dates || []), todayValue],
+          dayStreak: oldHabit.dayStreak + 1,
+        };
+        const newHabits = [...habits];
+        newHabits.splice(oldHabitIndex, 1, newHabit);
+        setHabits(newHabits);
+      } catch (err: any) {
+        Alert.alert(err.message);
+      }
     }
   };
 
