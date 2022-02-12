@@ -2,10 +2,11 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useState } from 'react';
 import { SubmitHandler, useForm, Controller } from 'react-hook-form';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import EmojiPicker from 'rn-emoji-keyboard';
 import { useSetRecoilState, useRecoilValue } from 'recoil';
 import { collection, setDoc, doc } from 'firebase/firestore';
-import { Alert, StyleSheet, Text, View } from 'react-native';
+import { Alert, StyleSheet, Text, TextInput, View } from 'react-native';
 import { Button, Input, Avatar, useTheme } from 'react-native-elements';
 import { EmojiType } from 'rn-emoji-keyboard/lib/typescript/types';
 import Layout from '../components/Layout';
@@ -25,6 +26,7 @@ export default function CreateScreen({ navigation }: any) {
     control,
     handleSubmit,
     setValue,
+    getValues,
     reset,
     formState: { errors },
   } = useForm<CreateFormValues>();
@@ -38,8 +40,9 @@ export default function CreateScreen({ navigation }: any) {
     try {
       console.log('firestore posted');
       const docRef = collection(firestore, user || '');
-      await setDoc(doc(docRef), habit);
-      const newHabit = { id: docRef.id, ...habit };
+      const newHabitRef = doc(docRef);
+      await setDoc(newHabitRef, habit);
+      const newHabit = { id: newHabitRef.id, ...habit };
       setHabits(prevHabits => [...prevHabits, newHabit]);
       reset();
       navigation.navigate('Daily');
@@ -74,7 +77,6 @@ export default function CreateScreen({ navigation }: any) {
             control={control}
             render={({ field: { value, onChange } }) => (
               <Input
-                autoFocus
                 placeholder="Enter new habit"
                 value={value}
                 onChangeText={onChange}
@@ -96,11 +98,22 @@ export default function CreateScreen({ navigation }: any) {
             render={({ field: { value } }) => (
               <Input
                 placeholder="Enter emoji"
+                showSoftInputOnFocus={false}
                 value={value}
-                onFocus={() => setIsOpen(true)}
+                onPressOut={() => setIsOpen(true)}
                 errorStyle={{ color: 'red' }}
                 errorMessage={errors.emoji ? errors.emoji.message : undefined}
                 style={{ color: theme.colors?.white, fontSize: 18 }}
+                rightIcon={
+                  getValues('emoji') ? (
+                    <MaterialIcons
+                      name="close"
+                      color="#fff"
+                      size={26}
+                      onPress={() => setValue('emoji', '')}
+                    />
+                  ) : undefined
+                }
               />
             )}
             rules={{ required: 'Emoji is required' }}
@@ -138,7 +151,9 @@ export default function CreateScreen({ navigation }: any) {
       <EmojiPicker
         onEmojiSelected={handlePick}
         open={isOpen}
-        onClose={() => setIsOpen(false)}
+        onClose={() => {
+          setIsOpen(false);
+        }}
       />
     </Layout>
   );
