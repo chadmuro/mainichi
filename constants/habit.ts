@@ -6,5 +6,6 @@ export type Habit = {
   emoji: string;
   name: string;
   color: Color;
-  dates: string[];
+  dates: number[];
+  createdAt: number;
 };

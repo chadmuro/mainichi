@@ -1,9 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { collection, getDocs } from 'firebase/firestore';
 import dayjs from 'dayjs';
-import { StyleSheet, View, ScrollView } from 'react-native';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { StyleSheet, View, ScrollView, TouchableOpacity } from 'react-native';
 import { Text, useTheme } from 'react-native-elements';
 import { firestore } from '../firebase';
 import Layout from '../components/Layout';
@@ -13,12 +14,14 @@ import { userState } from '../atoms/userState';
 import { getDayOfTheWeek } from '../constants/daysOfTheWeek';
 
 export default function DailyScreen() {
-  const dayValue = dayjs().day();
-  const todaysDate = `${dayjs().format('YYYY MMMM DD')}, ${
-    getDayOfTheWeek(dayValue)?.name
-  }`;
   const { theme } = useTheme();
   const [habits, setHabits] = useRecoilState(habitsState);
+  const [selectedDate, setSelectedDate] = useState(
+    dayjs().hour(0).minute(0).second(0).millisecond(0).valueOf(),
+  );
+  const todaysDate = `${dayjs(selectedDate).format('YYYY MMMM DD')}, ${
+    getDayOfTheWeek(dayjs(selectedDate).day())?.name
+  }`;
   const user = useRecoilValue(userState);
 
   const getHabits = async () => {
@@ -35,7 +38,6 @@ export default function DailyScreen() {
   useEffect(() => {
     getHabits();
   }, []);
-  console.log(habits);
 
   return (
     <Layout>
@@ -47,6 +49,18 @@ export default function DailyScreen() {
         }}
       >
         <View style={styles.titleWrap}>
+          <TouchableOpacity>
+            <MaterialIcons
+              name="arrow-back-ios"
+              color="#fff"
+              size={26}
+              onPress={() =>
+                setSelectedDate(prevDate =>
+                  dayjs(prevDate).add(-1, 'day').valueOf(),
+                )
+              }
+            />
+          </TouchableOpacity>
           <Text
             style={{
               color: theme.colors?.white,
@@ -55,9 +69,27 @@ export default function DailyScreen() {
           >
             {todaysDate}
           </Text>
+          <TouchableOpacity>
+            <MaterialIcons
+              name="arrow-forward-ios"
+              color="#fff"
+              size={26}
+              onPress={() =>
+                setSelectedDate(prevDate =>
+                  dayjs(prevDate).add(1, 'day').valueOf(),
+                )
+              }
+            />
+          </TouchableOpacity>
         </View>
         {habits &&
-          habits.map(habit => <HabitCard habit={habit} key={habit.id} />)}
+          habits.map(habit => (
+            <HabitCard
+              habit={habit}
+              key={habit.id}
+              selectedDate={selectedDate}
+            />
+          ))}
       </ScrollView>
     </Layout>
   );
@@ -65,6 +97,9 @@ export default function DailyScreen() {
 
 const styles = StyleSheet.create({
   titleWrap: {
+    width: 350,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginVertical: 10,
   },
 });

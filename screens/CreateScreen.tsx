@@ -1,12 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useState } from 'react';
+import dayjs from 'dayjs';
 import { SubmitHandler, useForm, Controller } from 'react-hook-form';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import EmojiPicker from 'rn-emoji-keyboard';
 import { useSetRecoilState, useRecoilValue } from 'recoil';
 import { collection, setDoc, doc } from 'firebase/firestore';
-import { Alert, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Alert, StyleSheet, Text, View } from 'react-native';
 import { Button, Input, Avatar, useTheme } from 'react-native-elements';
 import { EmojiType } from 'rn-emoji-keyboard/lib/typescript/types';
 import Layout from '../components/Layout';
@@ -36,13 +37,20 @@ export default function CreateScreen({ navigation }: any) {
   const setHabits = useSetRecoilState(habitsState);
   const user = useRecoilValue(userState);
 
-  const postHabit = async (habit: Omit<Habit, 'id'>) => {
+  const postHabit = async (habit: Omit<Habit, 'id' | 'createdAt'>) => {
     try {
       console.log('firestore posted');
       const docRef = collection(firestore, user || '');
       const newHabitRef = doc(docRef);
-      await setDoc(newHabitRef, habit);
-      const newHabit = { id: newHabitRef.id, ...habit };
+      await setDoc(newHabitRef, {
+        ...habit,
+        createdAt: dayjs().hour(0).minute(0).second(0).millisecond(0).valueOf(),
+      });
+      const newHabit = {
+        id: newHabitRef.id,
+        createdAt: dayjs().hour(0).minute(0).second(0).millisecond(0).valueOf(),
+        ...habit,
+      };
       setHabits(prevHabits => [...prevHabits, newHabit]);
       reset();
       navigation.navigate('Daily');

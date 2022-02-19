@@ -6,32 +6,25 @@ import {
   doc,
   increment,
 } from 'firebase/firestore';
-import dayjs from 'dayjs';
 import { useTheme } from 'react-native-elements';
 import { useRecoilValue, useRecoilState } from 'recoil';
 import { firestore } from '../firebase';
 import { getDayText } from '../constants/daysOfTheWeek';
 import { userState } from '../atoms/userState';
 import { habitsState } from '../atoms/habitsState';
+import { Habit } from '../constants/habit';
 
 interface HabitCardProps {
-  habit: {
-    id: string;
-    emoji: string;
-    name: string;
-    color: string;
-    dayStreak: number;
-    dates: string[];
-  };
+  habit: Habit;
+  selectedDate: number;
 }
 
-export default function HabitCard({ habit }: HabitCardProps) {
+export default function HabitCard({ habit, selectedDate }: HabitCardProps) {
   const { theme } = useTheme();
-  const todayValue = dayjs().format('YYMMDD');
   const user = useRecoilValue(userState);
   const [habits, setHabits] = useRecoilState(habitsState);
 
-  const completed = !!habit.dates?.includes(todayValue);
+  const completed = !!habit.dates?.includes(selectedDate);
 
   const onHabitPress = async (habitId: string) => {
     if (completed) {
@@ -39,12 +32,12 @@ export default function HabitCard({ habit }: HabitCardProps) {
         console.log('firestore updated');
         const docRef = doc(firestore, user || '', habitId);
         await updateDoc(docRef, {
-          dates: arrayRemove(todayValue),
+          dates: arrayRemove(selectedDate),
           dayStreak: increment(-1),
         });
         const oldHabitIndex = habits.findIndex(habit => habit.id === habitId);
         const oldHabit = habits[oldHabitIndex];
-        const newDates = oldHabit.dates.filter(date => date !== todayValue);
+        const newDates = oldHabit.dates.filter(date => date !== selectedDate);
         const newHabit = {
           ...oldHabit,
           dates: [...newDates],
@@ -61,14 +54,14 @@ export default function HabitCard({ habit }: HabitCardProps) {
         console.log('firestore updated');
         const docRef = doc(firestore, user || '', habitId);
         await updateDoc(docRef, {
-          dates: arrayUnion(todayValue),
+          dates: arrayUnion(selectedDate),
           dayStreak: increment(1),
         });
         const oldHabitIndex = habits.findIndex(habit => habit.id === habitId);
         const oldHabit = habits[oldHabitIndex];
         const newHabit = {
           ...oldHabit,
-          dates: [...(oldHabit?.dates || []), todayValue],
+          dates: [...(oldHabit?.dates || []), selectedDate],
           dayStreak: oldHabit.dayStreak + 1,
         };
         const newHabits = [...habits];
@@ -79,6 +72,10 @@ export default function HabitCard({ habit }: HabitCardProps) {
       }
     }
   };
+
+  if (selectedDate < habit.createdAt) {
+    return null;
+  }
 
   return (
     <TouchableOpacity
